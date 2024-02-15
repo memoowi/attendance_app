@@ -272,7 +272,7 @@ class HomePage extends StatelessWidget {
   FloatingActionButton fab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/clock');
+        Navigator.pushNamed(context, '/login');
       },
       backgroundColor: Colors.white,
       tooltip: 'Clock In/Out',

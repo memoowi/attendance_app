@@ -1,4 +1,5 @@
 import 'package:attendance_app/utils/custom_colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ClockPage extends StatelessWidget {
@@ -162,10 +163,10 @@ class ClockPage extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.save, color: Colors.white),
+                      Icon(CupertinoIcons.clock_fill, color: Colors.white),
                       SizedBox(width: 10.0),
                       Text(
-                        'Save Clock',
+                        'Clock In / Out',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w600,

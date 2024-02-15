@@ -15,9 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Attendance App',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
-        '/': (context) => HomePage(),
+        '/home': (context) => HomePage(),
         '/clock': (context) => ClockPage(),
         '/login': (context) => LoginPage(),
       },
