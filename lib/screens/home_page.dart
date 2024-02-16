@@ -1,4 +1,3 @@
-import 'package:attendance_app/models/attendance_list_model.dart';
 import 'package:attendance_app/models/server_time_model.dart';
 import 'package:attendance_app/providers/attendances_list_provider.dart';
 import 'package:attendance_app/providers/auth_provider.dart';
@@ -15,6 +14,11 @@ class HomePage extends StatelessWidget {
     Provider.of<ServerTimeProvider>(context, listen: false).getServerTime();
   }
 
+  void getAttendancesList(BuildContext context) {
+    Provider.of<AttendanceListProvider>(context, listen: false)
+        .getAttendances(context);
+  }
+
   void _logout(BuildContext context) {
     Provider.of<AuthProvider>(context, listen: false)
         .logout()
@@ -24,6 +28,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     getServerTime(context);
+    getAttendancesList(context);
     return Scaffold(
       appBar: appBar(context),
       body: SingleChildScrollView(
@@ -115,7 +120,10 @@ class HomePage extends StatelessWidget {
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                      getServerTime(context);
+                                      Provider.of<ServerTimeProvider>(
+                                        context,
+                                        listen: false,
+                                      ).refreshServerTime();
                                     },
                                     icon: Icon(Icons.refresh_sharp),
                                     color: Colors.white,
@@ -178,41 +186,41 @@ class HomePage extends StatelessWidget {
                 'Here are your latest attendances',
               ),
               SizedBox(height: 20.0),
-              FutureBuilder<AttendanceListModel?>(
-                future:
-                    Provider.of<AttendanceListProvider>(context, listen: false)
-                        .getAttendancesList(context),
-                builder:
-                    (context, AsyncSnapshot<AttendanceListModel?> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+              Consumer(
+                builder: (context, AttendanceListProvider attendances, child) {
+                  if (attendances.attendances != null) {
+                    if (attendances.attendances!.data!.isNotEmpty) {
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 10.0);
+                        },
+                        itemCount: attendances.attendances!.data!.length,
+                        itemBuilder: (context, index) {
+                          final sortedData = attendances.attendances!.data!
+                            ..sort(
+                                (a, b) => b.createdAt!.compareTo(a.createdAt!));
+                          final attendance = sortedData[index];
+                          return recordData(
+                            attendance.createdAt!,
+                            attendance.clockIn,
+                            attendance.clockOut,
+                          );
+                        },
+                      );
+                    } else {
+                      return notFoundData();
+                    }
+                  } else {
                     return Center(
                       child: CircularProgressIndicator(
-                        color: CustomColors.primaryColor,
+                        color: CustomColors.secondaryColor,
                       ),
                     );
-                  } else if (snapshot.hasData) {
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) =>
-                          SizedBox(height: 10.0),
-                      itemCount: snapshot.data!.data!.length,
-                      itemBuilder: (context, index) {
-                        final sortedData = snapshot.data!.data!
-                          ..sort(
-                              (a, b) => b.createdAt!.compareTo(a.createdAt!));
-                        final attendance = sortedData[index];
-                        return recordData(attendance.createdAt!,
-                            attendance.clockIn, attendance.clockOut);
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return notFoundData();
-                  } else {
-                    return notFoundData();
                   }
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -329,6 +337,13 @@ class HomePage extends StatelessWidget {
 
   AppBar appBar(BuildContext context) {
     return AppBar(
+      leading: IconButton(
+        onPressed: () async {
+          await Provider.of<AttendanceListProvider>(context, listen: false)
+              .refreshAttendancesList(context);
+        },
+        icon: Icon(Icons.refresh_sharp),
+      ),
       title: Text(
         'Attendances',
         style: TextStyle(

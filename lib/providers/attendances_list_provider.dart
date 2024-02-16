@@ -32,8 +32,9 @@ class AttendanceListProvider extends ChangeNotifier {
     }
   }
 
-  Future<AttendanceListModel> getAttendancesList(BuildContext context) async {
+  Future<void> refreshAttendancesList(BuildContext context) async {
+    _attendances = null;
+    notifyListeners();
     await getAttendances(context);
-    return _attendances!;
   }
 }

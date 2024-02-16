@@ -11,6 +11,7 @@ class ServerTimeProvider extends ChangeNotifier {
 
   Future<void> getServerTime() async {
     try {
+      _serverTime = null;
       final response = await dio.get(Config.serverTimeApiUrl);
       if (response.statusCode == 200) {
         _serverTime = ServerTimeModel.fromJson(response.data);
@@ -21,5 +22,11 @@ class ServerTimeProvider extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> refreshServerTime() async {
+    _serverTime = null;
+    notifyListeners();
+    await getServerTime();
   }
 }
