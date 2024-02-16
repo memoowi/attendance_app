@@ -1,6 +1,8 @@
+import 'package:attendance_app/providers/auth_provider.dart';
 import 'package:attendance_app/utils/custom_colors.dart';
 import 'package:attendance_app/widgets/custom_clip_path.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,15 +36,17 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      print('Login Successful');
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => HomePage(),
-      //   ),
-      // );
+      bool loggedIn = await Provider.of<AuthProvider>(context, listen: false)
+          .login(_emailController.text, _passwordController.text);
+
+      if (loggedIn == true) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+        );
+      }
     }
   }
 
@@ -72,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           flexibleSpace: ClipPath(
             clipper: CustomClipPath(),
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
                     'https://i.pinimg.com/736x/da/59/39/da593983d793705f3fbb3c1fa1e067a4.jpg',
@@ -87,16 +91,16 @@ class _LoginPageState extends State<LoginPage> {
       // extendBodyBehindAppBar: true,
       backgroundColor: CustomColors.tertiaryColor,
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
-          margin: EdgeInsets.all(24.0),
+          margin: const EdgeInsets.all(24.0),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20.0),
-                Text(
+                const SizedBox(height: 20.0),
+                const Text(
                   'Welcome, Please ...',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
@@ -105,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ShaderMask(
                   shaderCallback: (Rect bounds) {
-                    return LinearGradient(
+                    return const LinearGradient(
                       colors: [
                         CustomColors.primaryColor,
                         CustomColors.secondaryColor,
@@ -114,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                       end: Alignment.bottomRight,
                     ).createShader(bounds);
                   },
-                  child: Text(
+                  child: const Text(
                     'LOGIN\uFF3F\uFF3F',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -123,11 +127,36 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
+                Consumer(
+                  builder: (context, AuthProvider authProvider, child) {
+                    if (authProvider.validationMessage != null) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 20.0),
+                        padding: const EdgeInsets.all(12.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.red,
+                        ),
+                        child: Text(
+                          authProvider.validationMessage!,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
                 TextFormField(
                   controller: _emailController,
                   validator: _emailValidator,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: CustomColors.primaryColor,
                     fontSize: 18.0,
                     fontWeight: FontWeight.w500,
@@ -137,25 +166,25 @@ class _LoginPageState extends State<LoginPage> {
                     hintStyle: TextStyle(
                       color: CustomColors.primaryColor.withOpacity(0.5),
                     ),
-                    prefixIcon: Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(Icons.email_outlined),
                     prefixIconColor: CustomColors.secondaryColor,
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: CustomColors.primaryColor,
                       ),
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: CustomColors.secondaryColor,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 TextFormField(
                   controller: _passwordController,
                   validator: _passwordValidator,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: CustomColors.primaryColor,
                     fontSize: 18.0,
                     fontWeight: FontWeight.w500,
@@ -167,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                     hintStyle: TextStyle(
                       color: CustomColors.primaryColor.withOpacity(0.5),
                     ),
-                    prefixIcon: Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(Icons.lock_outline),
                     prefixIconColor: CustomColors.secondaryColor,
                     suffixIcon: IconButton(
                       onPressed: _toggleObscureText,
@@ -176,19 +205,19 @@ class _LoginPageState extends State<LoginPage> {
                           : Icons.visibility_off),
                     ),
                     suffixIconColor: CustomColors.primaryColor,
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: CustomColors.primaryColor,
                       ),
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: CustomColors.secondaryColor,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 40.0),
+                const SizedBox(height: 40.0),
                 Center(
                   child: ElevatedButton(
                     onPressed: _login,
@@ -203,10 +232,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       elevation: MaterialStateProperty.all<double>(0),
                       padding: MaterialStateProperty.all<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 50.0, vertical: 10.0),
+                        const EdgeInsets.symmetric(
+                            horizontal: 50.0, vertical: 10.0),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Login',
                       style: TextStyle(
                         fontSize: 18.0,

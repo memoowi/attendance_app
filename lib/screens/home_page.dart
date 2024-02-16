@@ -1,11 +1,21 @@
+import 'package:attendance_app/models/server_time_model.dart';
+import 'package:attendance_app/providers/auth_provider.dart';
+import 'package:attendance_app/providers/server_time_provider.dart';
 import 'package:attendance_app/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  void getServerTime(BuildContext context) {
+    Provider.of<ServerTimeProvider>(context, listen: false).getServerTime();
+  }
+
   @override
   Widget build(BuildContext context) {
+    getServerTime(context);
     return Scaffold(
       appBar: appBar(),
       body: SingleChildScrollView(
@@ -23,26 +33,33 @@ class HomePage extends StatelessWidget {
                       fontSize: 20.0,
                     ),
                   ),
-                  ShaderMask(
-                    shaderCallback: (Rect bounds) {
-                      return LinearGradient(
-                        colors: [
-                          CustomColors.primaryColor,
-                          CustomColors.secondaryColor,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ).createShader(bounds);
-                    },
-                    child: Text(
-                      'Misbach !',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  Consumer(
+                      builder: (context, AuthProvider authProvider, child) {
+                    if (authProvider.user != null) {
+                      return ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [
+                              CustomColors.primaryColor,
+                              CustomColors.secondaryColor,
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          '${authProvider.user!.name!} !',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
                 ],
               ),
               SizedBox(height: 20.0),
@@ -60,76 +77,92 @@ class HomePage extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Server Time :',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Asia/Jakarta',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.refresh_sharp),
-                              color: Colors.white,
-                              iconSize: 16.0,
-                              constraints: BoxConstraints(),
-                              padding: EdgeInsets.all(5.0),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.0),
-                    Container(
-                      padding: EdgeInsets.all(15.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 3.0,
-                        ),
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: Colors.white12,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Consumer(
+                  builder: (context, ServerTimeProvider serverTime, child) {
+                    if (serverTime.serverTime != null) {
+                      ServerTimeModel data = serverTime.serverTime!;
+                      return Column(
                         children: [
-                          Text(
-                            'Mon, 12 Feb 2024',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              fontSize: 18.0,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Server Time :',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    data.data!.timezone!,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      getServerTime(context);
+                                    },
+                                    icon: Icon(Icons.refresh_sharp),
+                                    color: Colors.white,
+                                    iconSize: 16.0,
+                                    constraints: BoxConstraints(),
+                                    padding: EdgeInsets.all(5.0),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            '9:30 AM',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              fontSize: 18.0,
+                          SizedBox(height: 10.0),
+                          Container(
+                            padding: EdgeInsets.all(15.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 3.0,
+                              ),
+                              borderRadius: BorderRadius.circular(15.0),
+                              color: Colors.white12,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  DateFormat("EEE, d MMM yyyy")
+                                      .format(data.data!.date!),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat("h:mm a").format(data.data!.date!),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(height: 20.0),
@@ -272,7 +305,7 @@ class HomePage extends StatelessWidget {
   FloatingActionButton fab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/login');
+        Navigator.pushNamed(context, '/clock');
       },
       backgroundColor: Colors.white,
       tooltip: 'Clock In/Out',
