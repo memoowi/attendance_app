@@ -1,4 +1,6 @@
+import 'package:attendance_app/models/attendance_list_model.dart';
 import 'package:attendance_app/models/server_time_model.dart';
+import 'package:attendance_app/providers/attendances_list_provider.dart';
 import 'package:attendance_app/providers/auth_provider.dart';
 import 'package:attendance_app/providers/server_time_provider.dart';
 import 'package:attendance_app/utils/custom_colors.dart';
@@ -13,11 +15,17 @@ class HomePage extends StatelessWidget {
     Provider.of<ServerTimeProvider>(context, listen: false).getServerTime();
   }
 
+  void _logout(BuildContext context) {
+    Provider.of<AuthProvider>(context, listen: false)
+        .logout()
+        .then((value) => {Navigator.pushReplacementNamed(context, '/login')});
+  }
+
   @override
   Widget build(BuildContext context) {
     getServerTime(context);
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(context),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
@@ -170,103 +178,41 @@ class HomePage extends StatelessWidget {
                 'Here are your latest attendances',
               ),
               SizedBox(height: 20.0),
-              // Container(
-              //   padding: EdgeInsets.all(20.0),
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     color: CustomColors.tertiaryColor,
-              //     borderRadius: BorderRadius.circular(10.0),
-              //   ),
-              //   child: Text(
-              //     'No attendances found',
-              //   ),
-              // ),
-              Container(
-                padding: EdgeInsets.all(3.0),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
-                    colors: [
-                      CustomColors.primaryColor,
-                      CustomColors.secondaryColor,
-                    ],
-                  ),
-                ),
-                child: Container(
-                  padding: EdgeInsets.all(15.0), // Border width
-                  decoration: BoxDecoration(
-                    color: CustomColors.tertiaryColor, // Border color
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Sun, 11 Feb 2024',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: CustomColors.primaryColor,
-                          fontSize: 14.0,
-                        ),
+              FutureBuilder<AttendanceListModel?>(
+                future:
+                    Provider.of<AttendanceListProvider>(context, listen: false)
+                        .getAttendancesList(context),
+                builder:
+                    (context, AsyncSnapshot<AttendanceListModel?> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: CustomColors.primaryColor,
                       ),
-                      SizedBox(height: 10.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                size: 30,
-                              ),
-                              SizedBox(width: 10.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Clock In',
-                                  ),
-                                  Text(
-                                    '9:00 AM',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.access_time,
-                                size: 30,
-                              ),
-                              SizedBox(width: 10.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Clock Out',
-                                  ),
-                                  Text(
-                                    '5:00 PM',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                    );
+                  } else if (snapshot.hasData) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 10.0),
+                      itemCount: snapshot.data!.data!.length,
+                      itemBuilder: (context, index) {
+                        final sortedData = snapshot.data!.data!
+                          ..sort(
+                              (a, b) => b.createdAt!.compareTo(a.createdAt!));
+                        final attendance = sortedData[index];
+                        return recordData(attendance.createdAt!,
+                            attendance.clockIn, attendance.clockOut);
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return notFoundData();
+                  } else {
+                    return notFoundData();
+                  }
+                },
+              )
             ],
           ),
         ),
@@ -275,7 +221,113 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  AppBar appBar() {
+  Container notFoundData() {
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: CustomColors.tertiaryColor,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Text(
+        'No attendances found',
+      ),
+    );
+  }
+
+  Container recordData(
+      DateTime createdAt, DateTime? clock_in, DateTime? clock_out) {
+    return Container(
+      padding: EdgeInsets.all(3.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        gradient: LinearGradient(
+          colors: [
+            CustomColors.primaryColor,
+            CustomColors.secondaryColor,
+          ],
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(15.0),
+        decoration: BoxDecoration(
+          color: CustomColors.tertiaryColor,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          children: [
+            Text(
+              DateFormat("EEE, d MMM yyyy").format(createdAt),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: CustomColors.primaryColor,
+                fontSize: 14.0,
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 30,
+                    ),
+                    SizedBox(width: 10.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Clock In',
+                        ),
+                        Text(
+                          DateFormat("h:mm a").format(clock_in!),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.access_time,
+                      size: 30,
+                    ),
+                    SizedBox(width: 10.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Clock Out',
+                        ),
+                        Text(
+                          clock_out != null
+                              ? DateFormat("h:mm a").format(clock_out)
+                              : '--',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  AppBar appBar(BuildContext context) {
     return AppBar(
       title: Text(
         'Attendances',
@@ -299,6 +351,17 @@ class HomePage extends StatelessWidget {
         ),
       ),
       foregroundColor: Colors.white,
+      actions: [
+        Container(
+          margin: EdgeInsets.only(right: 10.0),
+          child: IconButton(
+            onPressed: () {
+              _logout(context);
+            },
+            icon: Icon(Icons.power_settings_new),
+          ),
+        ),
+      ],
     );
   }
 

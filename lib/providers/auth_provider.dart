@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:attendance_app/models/token_model.dart';
 import 'package:attendance_app/models/user_model.dart';
 import 'package:attendance_app/utils/config.dart';
