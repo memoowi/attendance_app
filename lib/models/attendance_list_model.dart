@@ -1,8 +1,9 @@
 class AttendanceListModel {
   String? status;
   List<Data>? data;
+  String? message;
 
-  AttendanceListModel({this.status, this.data});
+  AttendanceListModel({this.status, this.data, this.message});
 
   AttendanceListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];

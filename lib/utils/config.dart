@@ -5,4 +5,5 @@ class Config {
   static const String userApiUrl = '$baseApiUrl/user';
   static const String serverTimeApiUrl = '$baseApiUrl/server-time';
   static const String attendanceApiUrl = '$baseApiUrl/attendances';
+  static const String clockApiUrl = '$baseApiUrl/clock';
 }

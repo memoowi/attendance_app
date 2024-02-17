@@ -1,5 +1,6 @@
 import 'package:attendance_app/providers/attendances_list_provider.dart';
 import 'package:attendance_app/providers/auth_provider.dart';
+import 'package:attendance_app/providers/location_provider.dart';
 import 'package:attendance_app/providers/server_time_provider.dart';
 import 'package:attendance_app/screens/clock_page.dart';
 import 'package:attendance_app/screens/home_page.dart';
@@ -20,6 +21,9 @@ void main() {
       ),
       ChangeNotifierProvider(
         create: (_) => AttendanceListProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => LocationProvider(),
       )
     ],
     child: MyApp(),

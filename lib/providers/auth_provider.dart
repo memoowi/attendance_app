@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:attendance_app/models/token_model.dart';
 import 'package:attendance_app/models/user_model.dart';
 import 'package:attendance_app/utils/config.dart';
@@ -49,7 +50,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, BuildContext context) async {
     try {
       final response = await http.post(
         Uri.parse(Config.loginApiUrl),
@@ -65,6 +66,7 @@ class AuthProvider extends ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', _token!);
         await isLoggedIn();
+        AnimatedSnackBar.material('Login successful', type: AnimatedSnackBarType.success).show(context);
         notifyListeners();
         return true;
       } else if (response.statusCode == 401) {
@@ -84,7 +86,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       final response = await dio.post(
@@ -94,6 +96,9 @@ class AuthProvider extends ChangeNotifier {
         }),
       );
       if (response.statusCode == 200) {
+        String message = TokenModel.fromJson(response.data).message!;
+        AnimatedSnackBar.material(message, type: AnimatedSnackBarType.success).show(context);
+        _user = null;
         _token = null;
         prefs.remove('token');
         notifyListeners();

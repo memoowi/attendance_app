@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
 
   void _logout(BuildContext context) {
     Provider.of<AuthProvider>(context, listen: false)
-        .logout()
+        .logout(context)
         .then((value) => {Navigator.pushReplacementNamed(context, '/login')});
   }
 
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Welcome, ',
+                    'Welcome back, ',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 20.0,

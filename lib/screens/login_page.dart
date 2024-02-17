@@ -12,10 +12,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isSubmitting = false;
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String? _emailValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
@@ -38,8 +39,11 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSubmitting = true;
+      });
       bool loggedIn = await Provider.of<AuthProvider>(context, listen: false)
-          .login(_emailController.text, _passwordController.text);
+          .login(_emailController.text, _passwordController.text, context);
 
       if (loggedIn == true) {
         Navigator.pushReplacementNamed(
@@ -48,6 +52,9 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     }
+    setState(() {
+      _isSubmitting = false;
+    });
   }
 
   void _toggleObscureText() {
@@ -70,8 +77,8 @@ class _LoginPageState extends State<LoginPage> {
         preferredSize:
             Size.fromHeight(MediaQuery.of(context).size.height * 0.25),
         child: AppBar(
+          forceMaterialTransparency: true,
           backgroundColor: Colors.transparent,
-          foregroundColor: CustomColors.tertiaryColor,
           elevation: 0,
           flexibleSpace: ClipPath(
             clipper: CustomClipPath(),
@@ -101,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 20.0),
                 const Text(
-                  'Welcome, Please ...',
+                  'Track with ease!',
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 18.0,
@@ -154,6 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 TextFormField(
+                  enabled: !_isSubmitting,
                   controller: _emailController,
                   validator: _emailValidator,
                   style: const TextStyle(
@@ -182,6 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
+                  enabled: !_isSubmitting,
                   controller: _passwordController,
                   validator: _passwordValidator,
                   style: const TextStyle(
@@ -220,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 40.0),
                 Center(
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: _isSubmitting ? null : _login,
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -228,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        CustomColors.primaryColor,
+                        _isSubmitting ? Colors.grey : CustomColors.primaryColor,
                       ),
                       elevation: MaterialStateProperty.all<double>(0),
                       padding: MaterialStateProperty.all<EdgeInsets>(
@@ -236,14 +245,22 @@ class _LoginPageState extends State<LoginPage> {
                             horizontal: 50.0, vertical: 10.0),
                       ),
                     ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isSubmitting
+                        ? SizedBox(
+                            height: 30.0,
+                            width: 30.0,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ],
