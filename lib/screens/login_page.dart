@@ -139,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                   builder: (context, AuthProvider authProvider, child) {
                     if (authProvider.validationMessage != null) {
                       return Container(
-                        margin: EdgeInsets.only(bottom: 20.0),
+                        margin: const EdgeInsets.only(bottom: 20.0),
                         padding: const EdgeInsets.all(12.0),
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Text(
                           authProvider.validationMessage!,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14.0,
                             fontWeight: FontWeight.w500,
@@ -231,25 +231,25 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: _isSubmitting ? null : _login,
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      backgroundColor: WidgetStateProperty.all<Color>(
                         _isSubmitting ? Colors.grey : CustomColors.primaryColor,
                       ),
-                      elevation: MaterialStateProperty.all<double>(0),
-                      padding: MaterialStateProperty.all<EdgeInsets>(
+                      elevation: WidgetStateProperty.all<double>(0),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
                         const EdgeInsets.symmetric(
                             horizontal: 50.0, vertical: 10.0),
                       ),
                     ),
                     child: _isSubmitting
-                        ? SizedBox(
+                        ? const SizedBox(
                             height: 30.0,
                             width: 30.0,
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               color: Colors.white,
                             ),
                           )

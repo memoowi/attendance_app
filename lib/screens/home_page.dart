@@ -32,14 +32,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: appBar(context),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Container(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  Text(
+                  const Text(
                     'Welcome back, ',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
                     if (authProvider.user != null) {
                       return ShaderMask(
                         shaderCallback: (Rect bounds) {
-                          return LinearGradient(
+                          return const LinearGradient(
                             colors: [
                               CustomColors.primaryColor,
                               CustomColors.secondaryColor,
@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                         },
                         child: Text(
                           '${authProvider.user!.name!} !',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 20.0,
                             color: Colors.white,
@@ -75,12 +75,12 @@ class HomePage extends StatelessWidget {
                   }),
                 ],
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  gradient: RadialGradient(
+                  gradient: const RadialGradient(
                     colors: [
                       CustomColors.primaryColor,
                       CustomColors.secondaryColor,
@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 'Server Time :',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
@@ -112,7 +112,7 @@ class HomePage extends StatelessWidget {
                                 children: [
                                   Text(
                                     data.data!.timezone!,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,
                                       fontSize: 16.0,
@@ -125,19 +125,19 @@ class HomePage extends StatelessWidget {
                                         listen: false,
                                       ).refreshServerTime();
                                     },
-                                    icon: Icon(Icons.refresh_sharp),
+                                    icon: const Icon(Icons.refresh_sharp),
                                     color: Colors.white,
                                     iconSize: 16.0,
-                                    constraints: BoxConstraints(),
-                                    padding: EdgeInsets.all(5.0),
+                                    constraints: const BoxConstraints(),
+                                    padding: const EdgeInsets.all(5.0),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          SizedBox(height: 10.0),
+                          const SizedBox(height: 10.0),
                           Container(
-                            padding: EdgeInsets.all(15.0),
+                            padding: const EdgeInsets.all(15.0),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.white,
@@ -152,7 +152,7 @@ class HomePage extends StatelessWidget {
                                 Text(
                                   DateFormat("EEE, d MMM yyyy")
                                       .format(data.data!.date!),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                     fontSize: 18.0,
@@ -160,7 +160,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 Text(
                                   DateFormat("h:mm a").format(data.data!.date!),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                     fontSize: 18.0,
@@ -172,7 +172,7 @@ class HomePage extends StatelessWidget {
                         ],
                       );
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.white,
                         ),
@@ -181,20 +181,20 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 20.0),
-              Text(
+              const SizedBox(height: 20.0),
+              const Text(
                 'Here are your latest attendances',
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Consumer(
                 builder: (context, AttendanceListProvider attendances, child) {
                   if (attendances.attendances != null) {
                     if (attendances.attendances!.data!.isNotEmpty) {
                       return ListView.separated(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         separatorBuilder: (context, index) {
-                          return SizedBox(height: 10.0);
+                          return const SizedBox(height: 10.0);
                         },
                         itemCount: attendances.attendances!.data!.length,
                         itemBuilder: (context, index) {
@@ -213,7 +213,7 @@ class HomePage extends StatelessWidget {
                       return notFoundData();
                     }
                   } else {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: CustomColors.secondaryColor,
                       ),
@@ -231,13 +231,13 @@ class HomePage extends StatelessWidget {
 
   Container notFoundData() {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20.0),
       width: double.infinity,
       decoration: BoxDecoration(
         color: CustomColors.tertiaryColor,
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Text(
+      child: const Text(
         'No attendances found',
       ),
     );
@@ -246,11 +246,11 @@ class HomePage extends StatelessWidget {
   Container recordData(
       DateTime createdAt, DateTime? clock_in, DateTime? clock_out) {
     return Container(
-      padding: EdgeInsets.all(3.0),
+      padding: const EdgeInsets.all(3.0),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             CustomColors.primaryColor,
             CustomColors.secondaryColor,
@@ -258,7 +258,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       child: Container(
-        padding: EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           color: CustomColors.tertiaryColor,
           borderRadius: BorderRadius.circular(8.0),
@@ -267,32 +267,32 @@ class HomePage extends StatelessWidget {
           children: [
             Text(
               DateFormat("EEE, d MMM yyyy").format(createdAt),
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 color: CustomColors.primaryColor,
                 fontSize: 14.0,
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.access_time,
                       size: 30,
                     ),
-                    SizedBox(width: 10.0),
+                    const SizedBox(width: 10.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Clock In',
                         ),
                         Text(
                           DateFormat("h:mm a").format(clock_in!),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 20.0,
                           ),
@@ -303,22 +303,22 @@ class HomePage extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.access_time,
                       size: 30,
                     ),
-                    SizedBox(width: 10.0),
+                    const SizedBox(width: 10.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Clock Out',
                         ),
                         Text(
                           clock_out != null
                               ? DateFormat("h:mm a").format(clock_out)
                               : '--',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 20.0,
                           ),
@@ -342,9 +342,9 @@ class HomePage extends StatelessWidget {
           await Provider.of<AttendanceListProvider>(context, listen: false)
               .refreshAttendancesList(context);
         },
-        icon: Icon(Icons.refresh_sharp),
+        icon: const Icon(Icons.refresh_sharp),
       ),
-      title: Text(
+      title: const Text(
         'Attendances',
         style: TextStyle(
           fontWeight: FontWeight.w600,
@@ -354,7 +354,7 @@ class HomePage extends StatelessWidget {
       centerTitle: true,
       backgroundColor: Colors.transparent,
       flexibleSpace: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               CustomColors.primaryColor,
@@ -368,12 +368,12 @@ class HomePage extends StatelessWidget {
       foregroundColor: Colors.white,
       actions: [
         Container(
-          margin: EdgeInsets.only(right: 10.0),
+          margin: const EdgeInsets.only(right: 10.0),
           child: IconButton(
             onPressed: () {
               _logout(context);
             },
-            icon: Icon(Icons.power_settings_new),
+            icon: const Icon(Icons.power_settings_new),
           ),
         ),
       ],
@@ -387,14 +387,14 @@ class HomePage extends StatelessWidget {
       },
       backgroundColor: Colors.white,
       tooltip: 'Clock In/Out',
-      shape: CircleBorder(
+      shape: const CircleBorder(
         side: BorderSide(
           color: CustomColors.tertiaryColor,
           width: 0.5,
         ),
       ),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
             colors: [
@@ -405,7 +405,7 @@ class HomePage extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.access_time_sharp,
           size: 30.0,
           color: Colors.white,

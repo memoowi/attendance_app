@@ -41,29 +41,30 @@ class MapSample extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                margin: EdgeInsets.only(bottom: 20.0),
+                margin: const EdgeInsets.only(bottom: 20.0),
                 child: ElevatedButton(
                   onPressed: () => _goToCurrentLocation(context),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                       CustomColors.tertiaryColor,
                     ),
-                    foregroundColor: MaterialStateProperty.all<Color>(
+                    foregroundColor: WidgetStateProperty.all<Color>(
                       CustomColors.primaryColor,
                     ),
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      const EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10.0),
                     ),
-                    overlayColor: MaterialStateProperty.all<Color>(
+                    overlayColor: WidgetStateProperty.all<Color>(
                       CustomColors.primaryColor.withOpacity(0.2),
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.location_on_outlined),
                       SizedBox(width: 10.0),
-                      const Text('Current Location'),
+                      Text('Current Location'),
                     ],
                   ),
                 ),

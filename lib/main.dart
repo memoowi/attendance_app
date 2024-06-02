@@ -26,7 +26,7 @@ void main() {
         create: (_) => LocationProvider(),
       )
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   CustomColors.primaryColor,
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
                 ],
               ),
             ),
-            child: Center(
+            child: const Center(
               child: CircularProgressIndicator(
                 color: Colors.white,
               ),
@@ -61,9 +61,9 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             initialRoute: isLoggedIn ? '/home' : '/login',
             routes: {
-              '/home': (context) => HomePage(),
-              '/clock': (context) => ClockPage(),
-              '/login': (context) => LoginPage(),
+              '/home': (context) => const HomePage(),
+              '/clock': (context) => const ClockPage(),
+              '/login': (context) => const LoginPage(),
             },
           );
         }

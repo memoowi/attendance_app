@@ -33,7 +33,7 @@ class ClockPage extends StatelessWidget {
           children: [
             Container(
               height: MediaQuery.of(context).size.height * 0.55,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     CustomColors.secondaryColor,
@@ -46,11 +46,12 @@ class ClockPage extends StatelessWidget {
               child: MapSample(),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
-              padding: EdgeInsets.all(3.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 30.0),
+              padding: const EdgeInsets.all(3.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [
                     CustomColors.primaryColor,
                     CustomColors.secondaryColor,
@@ -58,14 +59,14 @@ class ClockPage extends StatelessWidget {
                 ),
               ),
               child: Container(
-                padding: EdgeInsets.all(15.0), // Border width
+                padding: const EdgeInsets.all(15.0), // Border width
                 decoration: BoxDecoration(
                   color: CustomColors.tertiaryColor, // Border color
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       'Server Time :',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -73,27 +74,27 @@ class ClockPage extends StatelessWidget {
                         fontSize: 14.0,
                       ),
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                     Consumer(
                       builder: (context, ServerTimeProvider serverTime, child) {
                         if (serverTime.serverTime == null) {
-                          return Text('Loading...');
+                          return const Text('Loading...');
                         } else {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.calendar_month_outlined,
                                     size: 26,
                                   ),
-                                  SizedBox(width: 10.0),
+                                  const SizedBox(width: 10.0),
                                   Text(
                                     DateFormat("EEE, d MMM yyyy").format(
                                       serverTime.serverTime!.data!.date!,
                                     ),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18.0,
                                     ),
@@ -102,16 +103,16 @@ class ClockPage extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.access_time,
                                     size: 26,
                                   ),
-                                  SizedBox(width: 10.0),
+                                  const SizedBox(width: 10.0),
                                   Text(
                                     DateFormat("h:mm a").format(
                                       serverTime.serverTime!.data!.date!,
                                     ),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18.0,
                                     ),
@@ -135,8 +136,8 @@ class ClockPage extends StatelessWidget {
                 return clockButton(context, true);
               }
             }),
-            SizedBox(height: 20.0),
-            Text(
+            const SizedBox(height: 20.0),
+            const Text(
               'Current Location :',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -147,7 +148,7 @@ class ClockPage extends StatelessWidget {
             Consumer(
               builder: (context, LocationProvider locationProvider, child) {
                 if (locationProvider.locationData == null) {
-                  return Text('Loading...');
+                  return const Text('Loading...');
                 } else {
                   return Text(
                     '${locationProvider.locationData!.latitude}, ${locationProvider.locationData!.longitude}',
@@ -170,11 +171,11 @@ class ClockPage extends StatelessWidget {
       },
       color: CustomColors.secondaryColor,
       style: ButtonStyle(
-        iconSize: MaterialStateProperty.all<double>(24.0),
-        padding: MaterialStateProperty.all<EdgeInsets>(
+        iconSize: WidgetStateProperty.all<double>(24.0),
+        padding: WidgetStateProperty.all<EdgeInsets>(
           EdgeInsets.zero,
         ),
-        backgroundColor: MaterialStateProperty.all<Color>(
+        backgroundColor: WidgetStateProperty.all<Color>(
           CustomColors.tertiaryColor,
         ),
         alignment: Alignment.center,
@@ -191,7 +192,7 @@ class ClockPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 gradient: isEnabled
-                    ? LinearGradient(
+                    ? const LinearGradient(
                         colors: [
                           CustomColors.tertiaryColor,
                           CustomColors.secondaryColor,
@@ -201,7 +202,7 @@ class ClockPage extends StatelessWidget {
                         end: Alignment.bottomRight,
                         stops: [0.0, 0.3, 1.0],
                       )
-                    : LinearGradient(colors: [
+                    : const LinearGradient(colors: [
                         CustomColors.tertiaryColor,
                         CustomColors.tertiaryColor,
                       ]),
@@ -211,7 +212,7 @@ class ClockPage extends StatelessWidget {
                           color: CustomColors.primaryColor.withOpacity(0.5),
                           blurRadius: 6.0,
                         )
-                      : BoxShadow(color: Colors.transparent),
+                      : const BoxShadow(color: Colors.transparent),
                 ],
               ),
             ),
@@ -225,27 +226,27 @@ class ClockPage extends StatelessWidget {
               }
             },
             style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
               backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.transparent),
-              foregroundColor: MaterialStateProperty.all<Color>(
+                  WidgetStateProperty.all<Color>(Colors.transparent),
+              foregroundColor: WidgetStateProperty.all<Color>(
                 isEnabled
                     ? Colors.white
                     : CustomColors.primaryColor.withOpacity(0.4),
               ),
-              overlayColor: MaterialStateProperty.all<Color>(
+              overlayColor: WidgetStateProperty.all<Color>(
                 isEnabled ? CustomColors.secondaryColor : Colors.transparent,
               ),
-              elevation: MaterialStateProperty.all<double>(0),
-              padding: MaterialStateProperty.all<EdgeInsets>(
-                EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              elevation: WidgetStateProperty.all<double>(0),
+              padding: WidgetStateProperty.all<EdgeInsets>(
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               ),
             ),
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(CupertinoIcons.clock_fill),
